@@ -1,0 +1,20 @@
+{
+	"bridge": {
+		"name": "Homebridge",
+		"username": "CD:22:3D:E3:CE:30",
+		"port": 51826,
+		"pin": "031-45-154"
+	},
+
+	"description": "This is an example configuration for the Spotify homebridge plugin",
+
+	"accessories": [
+		{
+      "accessory": "Spotify",
+      "name": "Spotify",
+      "fadeInTime": "6",
+      "fadeOutTime": "6",
+      "statusCheckInterval": "2"
+    }
+	]
+}
