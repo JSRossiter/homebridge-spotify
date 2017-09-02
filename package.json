@@ -1,0 +1,29 @@
+{
+  "name": "homebridge-spotify",
+  "version": "0.1.0",
+  "description": "homebridge-plugin for Spotify control",
+  "main": "index.js",
+  "engines": {
+    "node": ">=6.0.0",
+    "homebridge": ">=0.2.0"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+ssh://git@github.com/JSRossiter/homebridge-spotify.git"
+  },
+  "keywords": [
+    "homebridge-plugin",
+    "Spotify",
+    "HomeKit"
+  ],
+  "author": "Jeff Rossiter",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/JSRossiter/homebridge-spotify/issues"
+  },
+  "homepage": "https://github.com/JSRossiter/homebridge-spotify#readme",
+  "dependencies": {
+    "loudness-http": "^0.1.0",
+    "node-osascript": "^2.0.0"
+  }
+}
