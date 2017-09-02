@@ -30,4 +30,4 @@ This plugin is primarily based on https://github.com/lprhodes/homebridge-applesc
 
 ## Issues
 
-Any issues or help getting setup please use the [github page] (https://github.com/JSRossiter/homebridge-spotify/issues).
+Any issues or help getting setup please use the [github page](https://github.com/JSRossiter/homebridge-spotify/issues).
