@@ -26,7 +26,9 @@ class Spotify {
     if (this.on === on) return callback();
 
     const state = on ? 'on' : 'off';
-    let script = on ? path.join(__dirname, 'scripts', 'spotify-on.applescript') : path.join(__dirname, 'scripts', 'spotify-off.applescript');
+    const script = on ? path.join(__dirname, 'scripts', 'spotify-on.applescript') : path.join(__dirname, 'scripts', 'spotify-off.applescript');
+    const fadeConfig = on ? 'fadeInTime' : 'fadeOutTime';
+    const fade = this.config[fadeConfig] * 1000 || 0;
 
     const done = (err) => {
       if (err) {
@@ -39,53 +41,40 @@ class Spotify {
         callback(null);
       }
     };
-    const fadeConfig = on ? 'fadeInTime' : 'fadeOutTime';
-    const fade = this.config[fadeConfig] * 1000 || 0;
 
     const logVolErr = (err) => {
-      if(err) this.log('node-loudness error:', err);
+      if (err) this.log('node-loudness error:', err);
     };
 
-    const fadeIn = (time) => {
-      loudness.getVolume((err, initVol) => {
-        const interval = time / initVol;
-        let i = 0;
-        loudness.setVolume(0, logVolErr);
-        osascript.executeFile(script, done);
-
-        const timer = setInterval(() => {
-          if (i === initVol) clearInterval(timer);
-          loudness.setVolume(i, logVolErr);
-          i++;
-        }, interval);
-      });
-    };
-
-    const fadeOut = (time) => {
-      loudness.getVolume((err, initVol) => {
-        const interval = time / initVol;
-        let i = 0;
-
-        const timer = setInterval(() => {
-          loudness.setVolume(initVol - i, logVolErr);
-          if (i === initVol) {
-            clearInterval(timer);
-            osascript.executeFile(script, done);
-            setTimeout(() => {
-              loudness.setVolume(initVol, logVolErr);
-            }, 500);
-          }
-          i++;
-        }, interval);
-      });
+    const adjustVol = (target, curVol, interval, cb) => {
+      setTimeout(() => {
+        const newVol = curVol > target ? curVol - 1 : curVol + 1;
+        loudness.setVolume(newVol, err => {
+          logVolErr(err);
+          if (newVol !== target) adjustVol(target, newVol, interval, cb);
+          else cb(err);
+        });
+      }, interval);
     };
 
     if (fade) {
-      if (on) {
-        fadeIn(fade);
-      } else {
-        fadeOut(fade);
-      }
+      loudness.getVolume((err, initVol) => {
+        const interval = fade / initVol;
+        if (on) {
+          loudness.setVolume(0, (err) => {
+            logVolErr(err);
+            osascript.executeFile(script);
+            adjustVol(initVol, 0, interval, done);
+          });
+        } else {
+          adjustVol(0, initVol, interval, () => {
+            osascript.executeFile(script, (err) => {
+              loudness.setVolume(initVol, logVolErr);
+              done(err);
+            });
+          });
+        }
+      });
     } else {
       osascript.executeFile(script, done);
     }
