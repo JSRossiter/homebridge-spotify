@@ -63,15 +63,17 @@ class Spotify {
         if (on) {
           loudness.setVolume(0, (err) => {
             logVolErr(err);
-            osascript.executeFile(script);
+            setTimeout(() => {
+              osascript.executeFile(script);
+            }, 100);
             adjustVol(initVol, 0, interval, done);
           });
         } else {
           adjustVol(0, initVol, interval, () => {
-            osascript.executeFile(script, (err) => {
+            osascript.executeFile(script, done);
+            setTimeout(() => {
               loudness.setVolume(initVol, logVolErr);
-              done(err);
-            });
+            }, 100);
           });
         }
       });
