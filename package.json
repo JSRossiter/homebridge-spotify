@@ -1,6 +1,6 @@
 {
   "name": "homebridge-spotify",
-  "version": "0.3.1",
+  "version": "0.3.2",
   "description": "homebridge-plugin for Spotify control",
   "main": "index.js",
   "engines": {
